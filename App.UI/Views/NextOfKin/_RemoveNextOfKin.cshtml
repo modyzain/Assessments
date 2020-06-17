@@ -1,0 +1,50 @@
+﻿@model App.Domain.DTOs.NextOfKinCommand
+@using App.Domain.Resources;
+
+<script src="~/ajax/patient.js"></script>
+<script type="text/javascript">
+
+    $('#btnSubmit').click(function () {
+        window.ManageNextOfKin("../ManageNextOfKin",
+            3,
+            $('#PkNokId').val(),
+            $('#FkPatientId').val(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "Record deleted successfully",
+            "Error occured"
+        )
+    });
+</script>
+<div class="modal-header">
+    <h4 class="modal-title text-info">@ViewBag.ModalTitle</h4>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "validation_form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PkNokId)
+            @Html.HiddenFor(model => model.FkPatientId)
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="text-danger" style="font-size: 20px;">@ViewBag.ConfirmRemove</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger" id="btnSubmit">@AppSettings.Removebtn</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal">@AppSettings.Closebtn</button>
+</div>

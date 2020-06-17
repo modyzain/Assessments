@@ -1,0 +1,47 @@
+﻿@using App.Domain.Resources;
+@{
+    ViewData["Title"] = "Next Of Kin";
+}
+<div class="card">
+    <div class="card-header">
+        <span class="float-left">Next Of Kin ( @Context.Request.Query["name"] )</span>
+        <span class="float-right">
+            <a id="btnCreate" class="btn btn-info btn-sm open-modal" href="../CreateNextOfKin?id=@Context.Request.Query["id"]" data-modal=""><span class="fa fa-plus-square icon-left"></span>@AppSettings.NewRecordbtn</a>
+            <a id="btnBack" class="btn btn-outline-secondary btn-sm" href="../NextOfKin/Index"><span class="fa fa-b"></span>@AppSettings.Backbtn</a>
+        </span>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("NextOfKinIndex", "NextOfKin", FormMethod.Get))
+        {
+            @Html.Hidden("FkPatientId", Context.Request.Query["id"])
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-bordered data-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">Relationship</th>
+                            <th class="text-center">Address #1</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <environment names="Development">
+        <script src="~/ajax/patient.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var patientId = $('#FkPatientId').val();
+            if (patientId != null) {
+                window.getNextOfKinData(patientId);
+            }
+        });
+    </script>
+}
+

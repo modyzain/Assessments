@@ -1,0 +1,189 @@
+﻿@model App.Domain.DTOs.NextOfKinCommand
+@using App.Domain.Resources;
+<style type="text/css">
+    .has-error .help-block, .fa-times {
+        color: red;
+    }
+
+    .fa-check {
+        color: green;
+    }
+</style>
+<script src="~/ajax/patient.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#validation_form').bootstrapValidator({
+            live: 'enabled',
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'fa fa-check',
+                invalid: 'fa fa-times',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                FkNokRelationshipId: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please select relationship'
+                        }
+                    }
+                },
+                NokName: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter nok name'
+                        }
+                    }
+                },
+                NokAddressLine1: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter addressLine #1'
+                        }
+                    }
+                },
+                NokPostcode: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter Postcode'
+                        }
+                    }
+                }
+            }
+        }).on('success.form.bv',
+            function (e) {
+                $('#validation_form').data('bootstrapValidator').resetForm();
+                // Prevent form submission
+                e.preventDefault();
+
+                // Get the form instance
+                var $form = $(e.target);
+
+                // Get the BootstrapValidator instance
+                var bv = $form.data('bootstrapValidator');
+
+                // Use Ajax to submit form data
+                SubmitData();
+            });
+    });
+
+    function SubmitData() {
+        window.ManageNextOfKin("../ManageNextOfKin",
+            2,
+            $('#PkNokId').val(),
+            $('#FkPatientId').val(),
+            $('#FkNokRelationshipId').val(),
+            $('#NokName').val(),
+            $('#NokAddressLine1').val(),
+            $('#NokAddressLine2').val(),
+            $('#NokAddressLine3').val(),
+            $('#NokAddressLine4').val(),
+            $('#NokPostcode').val(),
+            "Record updated successfully",
+            "Error occured"
+        )
+    }
+</script>
+<div class="modal-header">
+    <h4 class="modal-title text-info">@ViewBag.ModalTitle</h4>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "validation_form" }))
+{
+    <div class="modal-body">
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.PkNokId)
+            <div class="row row-fluid">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NokPostcode, AppPatientBasicInfo.lblNokCode, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.NokPostcode, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblNokCode })
+                            @Html.ValidationMessageFor(model => model.NokPostcode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.FkNokRelationshipId, AppPatientBasicInfo.lblNokRelationship, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @if (ViewBag.RelationshipId != null)
+                            {
+                                @Html.DropDownList("FkNokRelationshipId", ViewBag.RelationshipId as SelectList, AppSettings.lblChoose, new { @class = "select form-control" })
+                            }
+                            else
+                            {
+                                <select class="select form-control">
+                                    <option>@AppSettings.lblChoose</option>
+                                </select>
+                            }
+                            @Html.ValidationMessageFor(model => model.FkNokRelationshipId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NokName, AppPatientBasicInfo.lblNokName, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.NokName, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblNokName })
+                            @Html.ValidationMessageFor(model => model.NokName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NokAddressLine1, AppPatientBasicInfo.lblNokAddress1, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.NokAddressLine1, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblNokAddress1 })
+                            @Html.ValidationMessageFor(model => model.NokAddressLine1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NokAddressLine2, AppPatientBasicInfo.lblNokAddress2, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.NokAddressLine2, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblNokAddress2 })
+                            @Html.ValidationMessageFor(model => model.NokAddressLine2, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NokAddressLine3, AppPatientBasicInfo.lblNokAddress3, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.NokAddressLine3, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblNokAddress3 })
+                            @Html.ValidationMessageFor(model => model.NokAddressLine3, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NokAddressLine4, AppPatientBasicInfo.lblNokAddress4, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.NokAddressLine4, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblNokAddress4 })
+                            @Html.ValidationMessageFor(model => model.NokAddressLine4, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="btnSubmit">@AppSettings.Savebtn</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">@AppSettings.Closebtn</button>
+    </div>
+}

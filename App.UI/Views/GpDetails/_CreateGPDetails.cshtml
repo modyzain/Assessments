@@ -1,0 +1,146 @@
+﻿@model App.Domain.DTOs.GpDetailsCommand
+@using App.Domain.Resources;
+<style type="text/css">
+    .has-error .help-block, .fa-times {
+        color: red;
+    }
+
+    .fa-check {
+        color: green;
+    }
+</style>
+<script src="~/ajax/patient.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#validation_form').bootstrapValidator({
+            live: 'enabled',
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'fa fa-check',
+                invalid: 'fa fa-times',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                GpCode: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter code'
+                        }
+                    }
+                },
+                GpSurName: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Please enter sur name'
+                        }
+                    }
+                },
+                GpPhone: {
+                    validators: {
+                        integer: {
+                            message: 'Incorrect number'
+                        },
+                        stringLength: {
+                            max: 12,
+                            min: 12,
+                            message: 'Max numbers is 12'
+                        }
+                    }
+                }
+            }
+        }).on('success.form.bv',
+            function (e) {
+                $('#validation_form').data('bootstrapValidator').resetForm();
+                // Prevent form submission
+                e.preventDefault();
+
+                // Get the form instance
+                var $form = $(e.target);
+
+                // Get the BootstrapValidator instance
+                var bv = $form.data('bootstrapValidator');
+
+                // Use Ajax to submit form data
+                SubmitData();
+            });
+    });
+
+    function SubmitData() {
+        window.ManageGpDetails("../ManageGPDetails",
+            1,
+            null,
+            $('#FkPatientId').val(),
+            $('#GpCode').val(),
+            $('#GpSurName').val(),
+            $('#GpInitials').val(),
+            $('#GpPhone').val(),
+            "Record saved successfully",
+            "Error occured"
+        )
+    }
+</script>
+
+<div class="modal-header">
+    <h4 class="modal-title text-info">@ViewBag.ModalTitle</h4>
+    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "validation_form", role = "form", enctype = "multipart/form-data" }))
+{
+    <div class="modal-body">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.FkPatientId)
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.GpCode, AppPatientBasicInfo.lblGpCode, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.GpCode, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblGpCode })
+                            @Html.ValidationMessageFor(model => model.GpCode, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.GpSurName, AppPatientBasicInfo.lblGpSurName, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.GpSurName, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblGpSurName })
+                            @Html.ValidationMessageFor(model => model.GpSurName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.GpInitials, AppPatientBasicInfo.lblGpInitials, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.GpInitials, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblGpInitials })
+                            @Html.ValidationMessageFor(model => model.GpInitials, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-fluid">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.GpPhone, AppPatientBasicInfo.lblGpPhone, htmlAttributes: new { @class = "col-md-12" })
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(model => model.GpPhone, new { @class = "form-control", @placeholder = AppPatientBasicInfo.lblGpPhone })
+                            @Html.ValidationMessageFor(model => model.GpPhone, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="btnSubmit">@AppSettings.Savebtn</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">@AppSettings.Closebtn</button>
+    </div>
+
+}

@@ -1,0 +1,40 @@
+﻿@using App.Domain.Resources;
+@{
+    ViewData["Title"] = "Basic Info";
+}
+
+<div class="card">
+    <div class="card-header">
+        <span class="float-left">Patients info</span>
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Index", "GpDetails", FormMethod.Get))
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-bordered data-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th class="text-center">Name</th>
+                            <th class="text-center">PasNumber</th>
+                            <th class="text-center">Gender</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <environment names="Development">
+        <script src="~/ajax/patient.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.getPatientGpDetailsData();
+        });
+    </script>
+}
+
